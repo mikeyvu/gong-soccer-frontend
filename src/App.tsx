@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignUpPage from "./pages/SignUp/SignUpPage";
+import VerifyEmailPage from "./pages/SignUp/VerifyEmailPage";
 import './App.css'
 
 function App() {
@@ -8,8 +9,8 @@ function App() {
       <Routes>
         <Route path="/" element={<SignUpPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        {/* <Route path="/verify-email" element={<VerifyEmailPage />} />
-        <Route path="/complete-profile" element={<CompleteProfilePage />} /> */}
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+        {/* <Route path="/complete-profile" element={<CompleteProfilePage />} /> */}
       </Routes>
     </BrowserRouter>
   );
