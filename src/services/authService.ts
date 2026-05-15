@@ -5,9 +5,14 @@ interface SignUpData {
     password: string;
 }
 
-interface verifyEmailData {
+interface VerifyEmailData {
     email: string;
-    code: string;
+    verificationCode: string;
+}
+
+interface LoginData {
+    email: string;
+    password: string;
 }
 
 export const signUp = async (data: SignUpData) => {
@@ -15,7 +20,17 @@ export const signUp = async (data: SignUpData) => {
     return res.data;
 };
 
-export const verifyEmail = async(data: verifyEmailData) => {
-    const res = await api.post("/auth/verify-email", data);
+export const verifyEmail = async(data: VerifyEmailData) => {
+    const res = await api.post("/auth/verify", data);
+    return res.data;
+};
+
+export const login = async(data: LoginData) => {
+    const res = await api.post("/auth/login", data);
+    return res.data;
+};
+
+export const resendVerification = async (email: string) => {
+    const res = await api.post("/auth/resend-verification", { email });
     return res.data;
 };
