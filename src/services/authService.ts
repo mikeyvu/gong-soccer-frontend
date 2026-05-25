@@ -25,8 +25,8 @@ export const verifyEmail = async(data: VerifyEmailData) => {
     return res.data;
 };
 
-export const login = async(data: LoginData) => {
-    const res = await api.post("/auth/login", data);
+export const login = async (data: LoginData): Promise<{ token: string }> => {
+    const res = await api.post<{ token: string }>("/auth/login", data);
     return res.data;
 };
 

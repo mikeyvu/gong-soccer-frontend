@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signUp, verifyEmail, login, resendVerification } from "@/services/authService";
+import { signUp, verifyEmail, login as loginService, resendVerification } from "@/services/authService";
+import { useAuth } from "@/context/AuthContext";
 
 type AuthView = "login" | "signup" | "verify";
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const { login: authLogin, auth } = useAuth();
   const [view, setView] = useState<AuthView>("login");
   const [pendingEmail, setPendingEmail] = useState("");
   const [error, setError] = useState("");
@@ -35,8 +37,10 @@ export default function AuthPage() {
     setError("");
     setLoading(true);
     try {
-      await login({ email: form.email, password: form.password });
-      navigate("/dashboard");
+      const response = await loginService({ email: form.email, password: form.password });
+      authLogin(response);
+      const teamId = auth.workspace?.activeMembership.teamId ?? 'fc-riverside';
+      navigate(`/${teamId}/dashboard`);
     } catch {
       setError("Invalid email or password.");
     } finally {
@@ -102,7 +106,7 @@ export default function AuthPage() {
     >
       {/* Blurred background image */}
       <img
-        src="/soccer-bg.jpg"
+        src="/soccer-background.jpg"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 w-full h-full object-cover object-center scale-105"
