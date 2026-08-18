@@ -1,47 +1,43 @@
 import type { GameHistoryEntry } from "@/types";
 import { formatShortDate } from "@/lib/formatters";
 
-function ResultDot({ result }: { result: string }) {
-  const color =
+function ResultBadge({ result }: { result: string }) {
+  const styles =
     result === "Won"
-      ? "bg-green-400"
+      ? "bg-[#EDF3EC] text-[#346538]"
       : result === "Lost"
-      ? "bg-red-400"
-      : "bg-orange-400";
-  return <span className={`w-2 h-2 rounded-full flex-shrink-0 ${color}`} />;
+      ? "bg-[#FDEBEC] text-[#9F2F2D]"
+      : "bg-[#FBF3DB] text-[#956400]";
+  return (
+    <span className={`text-xs px-2 py-0.5 rounded-full font-medium uppercase tracking-[0.04em] ${styles}`}>
+      {result}
+    </span>
+  );
 }
 
 export default function GameHistoryCard({ games }: { games: GameHistoryEntry[] }) {
   return (
-    <div className="rounded-2xl bg-white/5 border border-white/10 p-5">
-      <p className="text-white/50 text-xs font-medium uppercase tracking-wider mb-4">
+    <div className="rounded-[12px] bg-white border border-[#EAEAEA] p-6">
+      <p className="text-[#787774] text-xs font-medium uppercase tracking-[0.05em] mb-2">
         Game History
       </p>
 
       {games.length === 0 ? (
-        <p className="text-white/30 text-sm text-center py-4">No games yet</p>
+        <p className="text-[#AAAAAA] text-sm text-center py-6">No games yet</p>
       ) : (
-        <div className="space-y-3">
-          {games.map((g) => (
-            <div key={g.id} className="flex items-center gap-3">
-              <ResultDot result={g.result} />
+        <div>
+          {games.map((g, i) => (
+            <div
+              key={g.id}
+              className={`flex items-center gap-3 py-3 ${i < games.length - 1 ? "border-b border-[#EAEAEA]" : ""}`}
+            >
               <div className="flex-1 min-w-0">
-                <p className="text-white text-sm font-medium truncate">{g.title}</p>
-                <p className="text-white/40 text-xs truncate">{g.venue}</p>
+                <p className="text-[#111111] text-sm font-medium truncate">{g.title}</p>
+                <p className="text-[#AAAAAA] text-xs truncate mt-0.5">{g.venue}</p>
               </div>
-              <div className="text-right flex-shrink-0">
-                <p className="text-white/50 text-xs">{formatShortDate(g.date)}</p>
-                <p
-                  className={`text-xs font-medium ${
-                    g.result === "Won"
-                      ? "text-green-400"
-                      : g.result === "Lost"
-                      ? "text-red-400"
-                      : "text-orange-400"
-                  }`}
-                >
-                  {g.result}
-                </p>
+              <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                <ResultBadge result={g.result} />
+                <p className="text-[#AAAAAA] text-xs">{formatShortDate(g.date)}</p>
               </div>
             </div>
           ))}

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthContext";
 import AuthPage from "./pages/Auth/AuthPage";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
+import CompleteProfilePage from "./pages/CompleteProfile/CompleteProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import './App.css'
 
@@ -15,6 +16,14 @@ function App() {
           <Route path="/signup" element={<Navigate to="/auth" replace />} />
           <Route path="/login" element={<Navigate to="/auth" replace />} />
           <Route path="/verify-email" element={<Navigate to="/auth" replace />} />
+          <Route
+            path="/complete-profile"
+            element={
+              <ProtectedRoute requireProfile={false}>
+                <CompleteProfilePage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/:teamId/dashboard"
             element={

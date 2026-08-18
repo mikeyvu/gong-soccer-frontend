@@ -10,7 +10,7 @@ type AuthView = "login" | "signup" | "verify";
 
 export default function AuthPage() {
   const navigate = useNavigate();
-  const { login: authLogin, auth } = useAuth();
+  const { login: authLogin } = useAuth();
   const [view, setView] = useState<AuthView>("login");
   const [pendingEmail, setPendingEmail] = useState("");
   const [error, setError] = useState("");
@@ -39,8 +39,12 @@ export default function AuthPage() {
     try {
       const response = await loginService({ email: form.email, password: form.password });
       authLogin(response);
-      const teamId = auth.workspace?.activeMembership.teamId ?? 'fc-riverside';
-      navigate(`/${teamId}/dashboard`);
+      if (!response.hasProfile) {
+        navigate("/complete-profile");
+      } else {
+        const teamId = response.memberships[0]?.teamId ?? "";
+        navigate(`/${teamId}/dashboard`);
+      }
     } catch {
       setError("Invalid email or password.");
     } finally {

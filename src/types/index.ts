@@ -16,17 +16,22 @@ export interface UserProfile {
   id: string;
   fullName: string;
   email: string;
+  phone?: string;
+  dateOfBirth?: string;
+  avatarUrl?: string;
 }
 
 export interface AuthState {
   user: UserProfile | null;
   token: string | null;
   workspace: ActiveWorkspaceState | null;
+  hasProfile: boolean;
 }
 
 export interface LoginResponse {
   token: string;
-  user: UserProfile;
+  hasProfile: boolean;
+  user: UserProfile | null;
   memberships: TeamMembership[];
 }
 

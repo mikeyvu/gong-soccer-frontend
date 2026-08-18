@@ -7,11 +7,11 @@ import type { Role } from "@/types";
 function RoleBadge({ role }: { role: Role }) {
   const styles =
     role === "CAPTAIN"
-      ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
-      : "bg-white/10 text-white/60 border-white/20";
+      ? "bg-[#FBF3DB] text-[#956400]"
+      : "bg-[#F7F6F3] text-[#787774]";
   const label = role === "CAPTAIN" ? "Captain" : role === "PLAYER" ? "Player" : "Spectator";
   return (
-    <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${styles}`}>
+    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${styles}`}>
       {label}
     </span>
   );
@@ -54,14 +54,14 @@ export default function TeamSwitcher() {
         className={`flex items-center gap-2 ${multi ? "cursor-pointer" : "cursor-default"}`}
       >
         {/* Team avatar */}
-        <div className="w-7 h-7 rounded-lg bg-green-500/30 border border-green-500/40 flex items-center justify-center flex-shrink-0">
-          <span className="text-green-400 text-xs font-bold">
+        <div className="w-7 h-7 rounded-[6px] bg-[#EDF3EC] border border-[#C8E0C5] flex items-center justify-center flex-shrink-0">
+          <span className="text-[#346538] text-xs font-bold">
             {activeMembership.teamName.charAt(0)}
           </span>
         </div>
 
         <div className="flex items-center gap-1.5">
-          <span className="text-white font-semibold text-sm leading-tight">
+          <span className="text-[#111111] font-semibold text-sm leading-tight">
             {activeMembership.teamName}
           </span>
           <RoleBadge role={activeMembership.role} />
@@ -69,15 +69,15 @@ export default function TeamSwitcher() {
 
         {multi && (
           <ChevronDown
-            className={`w-4 h-4 text-white/50 transition-transform ${open ? "rotate-180" : ""}`}
+            className={`w-4 h-4 text-[#AAAAAA] transition-transform ${open ? "rotate-180" : ""}`}
           />
         )}
       </button>
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute top-full left-0 mt-2 w-64 rounded-xl bg-[#1a2e1f] border border-white/15 shadow-2xl z-50 overflow-hidden">
-          <p className="text-white/40 text-xs font-medium px-3 pt-3 pb-1 uppercase tracking-wider">
+        <div className="absolute top-full left-0 mt-2 w-64 rounded-[8px] bg-white border border-[#EAEAEA] z-50 overflow-hidden" style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
+          <p className="text-[#AAAAAA] text-xs font-medium px-3 pt-3 pb-1 uppercase tracking-[0.05em]">
             Your Teams
           </p>
           {memberships.map((m) => {
@@ -87,18 +87,18 @@ export default function TeamSwitcher() {
                 key={m.teamId}
                 type="button"
                 onClick={() => handleSelect(m.teamId)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 transition text-left"
+                className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[#F7F6F3] transition-colors text-left"
               >
-                <div className="w-8 h-8 rounded-lg bg-green-500/20 border border-green-500/30 flex items-center justify-center flex-shrink-0">
-                  <span className="text-green-400 text-xs font-bold">
+                <div className="w-7 h-7 rounded-[6px] bg-[#EDF3EC] border border-[#C8E0C5] flex items-center justify-center flex-shrink-0">
+                  <span className="text-[#346538] text-xs font-bold">
                     {m.teamName.charAt(0)}
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-medium truncate">{m.teamName}</p>
-                  <p className="text-white/40 text-xs">/{m.teamId}/dashboard</p>
+                  <p className="text-[#111111] text-sm font-medium truncate">{m.teamName}</p>
+                  <p className="text-[#AAAAAA] text-xs">/{m.teamId}/dashboard</p>
                 </div>
-                {isActive && <Check className="w-4 h-4 text-green-400 flex-shrink-0" />}
+                {isActive && <Check className="w-4 h-4 text-[#346538] flex-shrink-0" />}
               </button>
             );
           })}

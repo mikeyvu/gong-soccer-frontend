@@ -1,4 +1,5 @@
 import api from "../shared/services/api";
+import type { LoginResponse } from "@/types";
 
 interface SignUpData {
     email: string;
@@ -25,8 +26,8 @@ export const verifyEmail = async(data: VerifyEmailData) => {
     return res.data;
 };
 
-export const login = async (data: LoginData): Promise<{ token: string }> => {
-    const res = await api.post<{ token: string }>("/auth/login", data);
+export const login = async (data: LoginData): Promise<LoginResponse> => {
+    const res = await api.post<LoginResponse>("/auth/login", data);
     return res.data;
 };
 

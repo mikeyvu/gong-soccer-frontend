@@ -1,26 +1,77 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import TeamSwitcher from "@/components/TeamSwitcher";
 import BalanceCard from "./components/BalanceCard";
 import NextGameCard from "./components/NextGameCard";
 import GameHistoryCard from "./components/GameHistoryCard";
-import TabBar, { type TabId } from "./components/TabBar";
 import { mockBalance, mockNextGame, mockGameHistory } from "@/mocks/dashboardMocks";
 
-function Avatar({ name }: { name: string }) {
-  return (
-    <div className="w-9 h-9 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center flex-shrink-0">
-      <span className="text-green-400 text-sm font-bold">{name.charAt(0).toUpperCase()}</span>
-    </div>
-  );
-}
+function ProfileDropdown({ name, onLogout }: { name: string; onLogout: () => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
-function PlaceholderTab({ label }: { label: string }) {
+  const initials = name
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
+
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-white/30">
-      <p className="text-lg font-medium">{label}</p>
-      <p className="text-sm mt-1">Coming soon</p>
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Profile menu"
+        className="w-9 h-9 rounded-full bg-[#111111] hover:bg-[#333333] flex items-center justify-center transition-colors active:scale-95"
+      >
+        <span className="text-white text-xs font-semibold tracking-wide">
+          {initials || "?"}
+        </span>
+      </button>
+
+      {open && (
+        <div
+          className="absolute top-full right-0 mt-2 w-48 rounded-[8px] bg-white border border-[#EAEAEA] z-50 overflow-hidden"
+          style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
+        >
+          <div className="px-4 py-3 border-b border-[#EAEAEA]">
+            <p className="text-[#111111] text-sm font-medium truncate">{name || "Account"}</p>
+          </div>
+          <div className="py-1">
+            <button
+              type="button"
+              className="w-full text-left px-4 py-2.5 text-sm text-[#111111] hover:bg-[#F7F6F3] transition-colors"
+            >
+              Profile
+            </button>
+            <button
+              type="button"
+              className="w-full text-left px-4 py-2.5 text-sm text-[#111111] hover:bg-[#F7F6F3] transition-colors"
+            >
+              Settings
+            </button>
+            <button
+              type="button"
+              onClick={() => { onLogout(); setOpen(false); }}
+              className="w-full text-left px-4 py-2.5 text-sm text-[#9F2F2D] hover:bg-[#FDEBEC] transition-colors"
+            >
+              Log out
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -28,50 +79,27 @@ function PlaceholderTab({ label }: { label: string }) {
 export default function DashboardPage() {
   const { auth, logout } = useAuth();
   const { teamId: _teamId } = useParams<{ teamId: string }>();
-  const [activeTab, setActiveTab] = useState<TabId>("home");
 
-  const role = auth.workspace?.activeMembership.role ?? "PLAYER";
-  const isCaptain = role === "CAPTAIN";
   const fullName = auth.user?.fullName ?? "";
 
   return (
-    <div className="min-h-screen bg-[#0d1f14] flex flex-col">
-      {/* Header */}
-      <header className="flex items-center justify-between px-4 py-3 bg-[#0d1f14]/95 border-b border-white/8 sticky top-0 z-40 backdrop-blur-sm">
+    <div className="min-h-screen bg-[#F7F6F3] flex flex-col">
+      <header className="flex items-center justify-between px-5 py-3.5 bg-white border-b border-[#EAEAEA] sticky top-0 z-40">
         <TeamSwitcher />
-        <div className="flex items-center gap-2.5">
-          <span className="text-white font-semibold text-sm hidden sm:block">{fullName}</span>
-          <button type="button" onClick={logout} title="Sign out" className="focus:outline-none">
-            <Avatar name={fullName || "?"} />
-          </button>
-        </div>
+        <ProfileDropdown name={fullName} onLogout={logout} />
       </header>
 
-      {/* Main content */}
-      <main className={`flex-1 overflow-y-auto px-4 py-4 space-y-3 ${isCaptain ? "pb-24" : "pb-6"}`}>
-        {/* User full name (mobile) */}
-        <div className="sm:hidden">
-          <h1 className="text-white text-xl font-bold">{fullName}</h1>
+      <main className="flex-1 overflow-y-auto px-4 pt-6 pb-10 w-full max-w-lg mx-auto space-y-3">
+        <div className="fade-in-up" style={{ animationDelay: "0ms" }}>
+          <BalanceCard balance={mockBalance} />
         </div>
-
-        {activeTab === "home" && (
-          <>
-            <BalanceCard balance={mockBalance} />
-            <NextGameCard game={mockNextGame} />
-            <GameHistoryCard games={mockGameHistory} />
-          </>
-        )}
-        {activeTab === "games" && <PlaceholderTab label="Games" />}
-        {activeTab === "finance" && <PlaceholderTab label="Finance" />}
-        {activeTab === "team" && <PlaceholderTab label="Team" />}
+        <div className="fade-in-up" style={{ animationDelay: "80ms" }}>
+          <NextGameCard game={mockNextGame} />
+        </div>
+        <div className="fade-in-up" style={{ animationDelay: "160ms" }}>
+          <GameHistoryCard games={mockGameHistory} />
+        </div>
       </main>
-
-      {/* Footer tab bar — Captain only */}
-      {isCaptain && (
-        <nav className="fixed bottom-0 left-0 right-0 bg-[#0d1f14]/95 border-t border-white/8 backdrop-blur-sm z-40">
-          <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
-        </nav>
-      )}
     </div>
   );
 }
