@@ -1,6 +1,14 @@
 import { createContext, useContext, useState } from "react";
-import type { AuthState, UserProfile, ActiveWorkspaceState, LoginResponse } from "@/types";
+import type { AuthState, UserProfile, ActiveWorkspaceState, LoginResponse, ApiTeamMembership, TeamMembership, Role } from "@/types";
 import { setTokenGetter } from "@/shared/services/api";
+
+function toTeamMembership(membership: ApiTeamMembership): TeamMembership {
+  return {
+    teamId: String(membership.team.id),
+    teamName: membership.team.name,
+    role: membership.role.replace(/^ROLE_/, "") as Role,
+  };
+}
 
 const TOKEN_KEY = 'gong_token';
 const USER_KEY = 'gong_user';
@@ -9,7 +17,7 @@ const HAS_PROFILE_KEY = 'gong_has_profile';
 
 interface AuthContextValue {
   auth: AuthState;
-  login: (payload: LoginResponse) => void;
+  login: (payload: LoginResponse) => AuthState;
   logout: () => void;
   switchTeam: (teamId: string) => void;
   setProfileComplete: (user: UserProfile) => void;
@@ -33,17 +41,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Keep the token getter in sync with current state via closure ref
   setTokenGetter(() => auth.token);
 
-  function login(payload: LoginResponse): void {
-    const workspace: ActiveWorkspaceState | null = payload.memberships.length > 0
-      ? { memberships: payload.memberships, activeMembership: payload.memberships[0] }
-      : null;
+  function login(payload: LoginResponse): AuthState {
+    // Fall back to cached profile/workspace info if the backend omits
+    // hasProfile/user/memberships on a given response.
+    const hasProfile = payload.hasProfile ?? true;
+    const user = payload.user !== undefined ? payload.user : auth.user;
+    const workspace: ActiveWorkspaceState | null =
+      payload.memberships && payload.memberships.length > 0
+        ? (() => {
+            const memberships = payload.memberships!.map(toTeamMembership);
+            return { memberships, activeMembership: memberships[0] };
+          })()
+        : auth.workspace;
 
     localStorage.setItem(TOKEN_KEY, payload.token);
-    localStorage.setItem(HAS_PROFILE_KEY, String(payload.hasProfile));
-    if (payload.user) localStorage.setItem(USER_KEY, JSON.stringify(payload.user));
+    localStorage.setItem(HAS_PROFILE_KEY, String(hasProfile));
+    if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
     if (workspace) localStorage.setItem(WORKSPACE_KEY, JSON.stringify(workspace));
 
-    setAuth({ token: payload.token, user: payload.user, workspace, hasProfile: payload.hasProfile });
+    const nextAuth: AuthState = { token: payload.token, user, workspace, hasProfile };
+    setAuth(nextAuth);
+    return nextAuth;
   }
 
   function logout(): void {
