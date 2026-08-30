@@ -38,11 +38,11 @@ export default function AuthPage() {
     setLoading(true);
     try {
       const response = await loginService({ email: form.email, password: form.password });
-      authLogin(response);
-      if (!response.hasProfile) {
+      const nextAuth = authLogin(response);
+      if (!nextAuth.hasProfile) {
         navigate("/complete-profile");
       } else {
-        const teamId = response.memberships[0]?.teamId ?? "";
+        const teamId = nextAuth.workspace?.activeMembership.teamId ?? "default";
         navigate(`/${teamId}/dashboard`);
       }
     } catch {

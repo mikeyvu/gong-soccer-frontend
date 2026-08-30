@@ -13,7 +13,7 @@ export const completeProfile = async (data: CompleteProfileData, avatar?: File):
     if (data.phone) formData.append("phone", data.phone);
     if (data.dateOfBirth) formData.append("dateOfBirth", data.dateOfBirth);
     if (avatar) formData.append("avatar", avatar);
-    const res = await api.post<UserProfile>("/profile", formData);
+    const res = await api.post<UserProfile>("/user/profile", formData);
     return res.data;
 };
 

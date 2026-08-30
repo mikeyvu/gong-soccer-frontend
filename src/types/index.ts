@@ -7,6 +7,12 @@ export interface TeamMembership {
   logoUrl?: string;
 }
 
+// Shape actually returned by the backend for each membership entry.
+export interface ApiTeamMembership {
+  team: { id: number; name: string };
+  role: string;
+}
+
 export interface ActiveWorkspaceState {
   memberships: TeamMembership[];
   activeMembership: TeamMembership;
@@ -30,9 +36,9 @@ export interface AuthState {
 
 export interface LoginResponse {
   token: string;
-  hasProfile: boolean;
-  user: UserProfile | null;
-  memberships: TeamMembership[];
+  hasProfile?: boolean;
+  user?: UserProfile | null;
+  memberships?: ApiTeamMembership[];
 }
 
 export type GameStatus = 'upcoming' | 'past' | 'cancelled';
