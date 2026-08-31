@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import TeamSwitcher from "@/components/TeamSwitcher";
+import RoleGate from "@/components/RoleGate";
 import BalanceCard from "./components/BalanceCard";
 import NextGameCard from "./components/NextGameCard";
 import GameHistoryCard from "./components/GameHistoryCard";
@@ -79,14 +80,27 @@ function ProfileDropdown({ name, onLogout }: { name: string; onLogout: () => voi
 export default function DashboardPage() {
   const { auth, logout } = useAuth();
   const { teamId: _teamId } = useParams<{ teamId: string }>();
+  const navigate = useNavigate();
 
   const fullName = auth.user?.fullName ?? "";
+  const activeTeamId = auth.workspace?.activeMembership.teamId;
 
   return (
     <div className="min-h-screen bg-[#F7F6F3] flex flex-col">
       <header className="flex items-center justify-between px-5 py-3.5 bg-white border-b border-[#EAEAEA] sticky top-0 z-40">
         <TeamSwitcher />
-        <ProfileDropdown name={fullName} onLogout={logout} />
+        <div className="flex items-center gap-3">
+          <RoleGate minRole="CAPTAIN">
+            <button
+              type="button"
+              onClick={() => activeTeamId && navigate(`/${activeTeamId}/manage`)}
+              className="text-[#111111] text-sm font-medium px-3 py-1.5 rounded-[8px] hover:bg-[#F7F6F3] transition-colors"
+            >
+              Manage Team
+            </button>
+          </RoleGate>
+          <ProfileDropdown name={fullName} onLogout={logout} />
+        </div>
       </header>
 
       <main className="flex-1 overflow-y-auto px-4 pt-6 pb-10 w-full max-w-lg mx-auto space-y-3">
