@@ -60,6 +60,12 @@ export interface FinanceBalance {
   description: string;
 }
 
+// Shape returned by GET /api/user/balance
+export interface UserBalance {
+  userId: number;
+  balance: number;
+}
+
 export interface GameHistoryEntry {
   id: string;
   title: string;

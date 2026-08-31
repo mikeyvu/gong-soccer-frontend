@@ -6,7 +6,8 @@ import RoleGate from "@/components/RoleGate";
 import BalanceCard from "./components/BalanceCard";
 import NextGameCard from "./components/NextGameCard";
 import GameHistoryCard from "./components/GameHistoryCard";
-import { mockBalance, mockNextGame, mockGameHistory } from "@/mocks/dashboardMocks";
+import { mockNextGame, mockGameHistory } from "@/mocks/dashboardMocks";
+import { getUserBalance } from "@/services/profileService";
 
 function ProfileDropdown({ name, onLogout }: { name: string; onLogout: () => void }) {
   const [open, setOpen] = useState(false);
@@ -85,6 +86,18 @@ export default function DashboardPage() {
   const fullName = auth.user?.fullName ?? "";
   const activeTeamId = auth.workspace?.activeMembership.teamId;
 
+  const [balance, setBalance] = useState<number | null>(null);
+  const [balanceLoading, setBalanceLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    getUserBalance()
+      .then((data) => { if (!cancelled) setBalance(data.balance); })
+      .catch(() => { if (!cancelled) setBalance(null); })
+      .finally(() => { if (!cancelled) setBalanceLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#F7F6F3] flex flex-col">
       <header className="flex items-center justify-between px-5 py-3.5 bg-white border-b border-[#EAEAEA] sticky top-0 z-40">
@@ -105,7 +118,7 @@ export default function DashboardPage() {
 
       <main className="flex-1 overflow-y-auto px-4 pt-6 pb-10 w-full max-w-lg mx-auto space-y-3">
         <div className="fade-in-up" style={{ animationDelay: "0ms" }}>
-          <BalanceCard balance={mockBalance} />
+          <BalanceCard amount={balance} loading={balanceLoading} />
         </div>
         <div className="fade-in-up" style={{ animationDelay: "80ms" }}>
           <NextGameCard game={mockNextGame} />

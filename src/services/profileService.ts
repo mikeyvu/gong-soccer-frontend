@@ -1,5 +1,5 @@
 import api from "../shared/services/api";
-import type { UserProfile } from "@/types";
+import type { UserProfile, UserBalance } from "@/types";
 
 interface CompleteProfileData {
     fullName: string;
@@ -14,6 +14,11 @@ export const completeProfile = async (data: CompleteProfileData, avatar?: File):
     if (data.dateOfBirth) formData.append("dateOfBirth", data.dateOfBirth);
     if (avatar) formData.append("avatar", avatar);
     const res = await api.post<UserProfile>("/user/profile", formData);
+    return res.data;
+};
+
+export const getUserBalance = async (): Promise<UserBalance> => {
+    const res = await api.get<UserBalance>("/user/balance");
     return res.data;
 };
 

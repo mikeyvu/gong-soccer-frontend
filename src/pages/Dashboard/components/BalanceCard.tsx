@@ -1,18 +1,27 @@
-import type { FinanceBalance } from "@/types";
 import { formatCurrency } from "@/lib/formatters";
 
-export default function BalanceCard({ balance }: { balance: FinanceBalance }) {
+export default function BalanceCard({
+  amount,
+  loading,
+}: {
+  amount: number | null;
+  loading?: boolean;
+}) {
   return (
     <div className="rounded-[12px] bg-white border border-[#EAEAEA] p-6">
       <p className="text-[#787774] text-xs font-medium uppercase tracking-[0.05em] mb-4">
         Balance
       </p>
-      <p
-        className="text-[#111111] text-4xl font-bold"
-        style={{ letterSpacing: "-0.02em", lineHeight: 1.1 }}
-      >
-        {formatCurrency(balance.amount, balance.currency)}
-      </p>
+      {loading ? (
+        <div className="h-10 w-32 bg-[#F0F0EF] rounded-[6px] animate-pulse" />
+      ) : (
+        <p
+          className="text-[#111111] text-4xl font-bold"
+          style={{ letterSpacing: "-0.02em", lineHeight: 1.1 }}
+        >
+          {formatCurrency(amount ?? 0, "USD")}
+        </p>
+      )}
       <div className="flex justify-end mt-6">
         <button
           type="button"

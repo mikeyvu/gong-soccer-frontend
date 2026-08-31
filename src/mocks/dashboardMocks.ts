@@ -1,10 +1,4 @@
-import type { FinanceBalance, Game, GameHistoryEntry } from "@/types";
-
-export const mockBalance: FinanceBalance = {
-  amount: 840,
-  currency: 'USD',
-  description: 'Collected from 12 players',
-};
+import type { Game, GameHistoryEntry } from "@/types";
 
 export const mockNextGame: Game = {
   id: 'game-001',
