@@ -25,3 +25,6 @@ dist-ssr
 
 # Credentials
 .env
+
+# Local handover notes
+backend-brief-top-up.md

@@ -4,9 +4,10 @@ import { useAuth } from "@/context/AuthContext";
 import TeamSwitcher from "@/components/TeamSwitcher";
 import RoleGate from "@/components/RoleGate";
 import BalanceCard from "./components/BalanceCard";
-import NextGameCard from "./components/NextGameCard";
-import GameHistoryCard from "./components/GameHistoryCard";
-import { mockNextGame, mockGameHistory } from "@/mocks/dashboardMocks";
+// TODO: re-enable once Balance Card is done
+// import NextGameCard from "./components/NextGameCard";
+// import GameHistoryCard from "./components/GameHistoryCard";
+// import { mockNextGame, mockGameHistory } from "@/mocks/dashboardMocks";
 import { getUserBalance } from "@/services/profileService";
 
 function ProfileDropdown({ name, onLogout }: { name: string; onLogout: () => void }) {
@@ -118,14 +119,20 @@ export default function DashboardPage() {
 
       <main className="flex-1 overflow-y-auto px-4 pt-6 pb-10 w-full max-w-lg mx-auto space-y-3">
         <div className="fade-in-up" style={{ animationDelay: "0ms" }}>
-          <BalanceCard amount={balance} loading={balanceLoading} />
+          <BalanceCard
+            amount={balance}
+            loading={balanceLoading}
+            onTopUp={() => activeTeamId && navigate(`/${activeTeamId}/top-up`)}
+          />
         </div>
+        {/* TODO: re-enable once Balance Card is done
         <div className="fade-in-up" style={{ animationDelay: "80ms" }}>
           <NextGameCard game={mockNextGame} />
         </div>
         <div className="fade-in-up" style={{ animationDelay: "160ms" }}>
           <GameHistoryCard games={mockGameHistory} />
         </div>
+        */}
       </main>
     </div>
   );
