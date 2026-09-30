@@ -4,6 +4,7 @@ import AuthPage from "./pages/Auth/AuthPage";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
 import CompleteProfilePage from "./pages/CompleteProfile/CompleteProfilePage";
 import ManageTeamPage from "./pages/ManageTeam/ManageTeamPage";
+import TopUpPage from "./pages/TopUp/TopUpPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import './App.css'
 
@@ -38,6 +39,14 @@ function App() {
             element={
               <ProtectedRoute minRole="CAPTAIN">
                 <ManageTeamPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/:teamId/top-up"
+            element={
+              <ProtectedRoute>
+                <TopUpPage />
               </ProtectedRoute>
             }
           />

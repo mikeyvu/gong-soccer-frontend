@@ -17,7 +17,8 @@ export const completeProfile = async (data: CompleteProfileData, avatar?: File):
     return res.data;
 };
 
-export const getUserBalance = async (): Promise<UserBalance> => {
+// TODO: single-team for now — move to GET /teams/{teamId}/balance (together with top-ups) when users can belong to more than one team.
+export const getUserBalance =async (): Promise<UserBalance> => {
     const res = await api.get<UserBalance>("/user/balance");
     return res.data;
 };

@@ -66,6 +66,16 @@ export interface UserBalance {
   balance: number;
 }
 
+export type TopUpStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+// Shape returned by POST/GET /api/user/top-ups
+export interface TopUpRequest {
+  id: number;
+  amount: number;
+  status: TopUpStatus;
+  createdAt: string;
+}
+
 export interface GameHistoryEntry {
   id: string;
   title: string;

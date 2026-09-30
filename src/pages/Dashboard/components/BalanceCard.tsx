@@ -3,9 +3,11 @@ import { formatCurrency } from "@/lib/formatters";
 export default function BalanceCard({
   amount,
   loading,
+  onTopUp,
 }: {
   amount: number | null;
   loading?: boolean;
+  onTopUp?: () => void;
 }) {
   return (
     <div className="rounded-[12px] bg-white border border-[#EAEAEA] p-6">
@@ -25,6 +27,7 @@ export default function BalanceCard({
       <div className="flex justify-end mt-6">
         <button
           type="button"
+          onClick={onTopUp}
           className="flex items-center gap-1.5 px-4 py-2 rounded-[6px] bg-[#111111] hover:bg-[#333333] text-white text-sm font-medium transition-colors active:scale-[0.98]"
         >
           <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
