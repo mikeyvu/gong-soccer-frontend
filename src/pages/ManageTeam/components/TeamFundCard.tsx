@@ -1,0 +1,55 @@
+import { formatCurrency } from "@/lib/formatters";
+
+export default function TeamFundCard({
+  amount,
+  loading,
+  error,
+  onManage,
+}: {
+  amount: number | null;
+  loading?: boolean;
+  error?: boolean;
+  onManage?: () => void;
+}) {
+  return (
+    <div className="rounded-[12px] bg-white border border-[#EAEAEA] p-6">
+      <p className="text-[#787774] text-xs font-medium uppercase tracking-[0.05em] mb-4">
+        Team's Fund Balance
+      </p>
+      {loading ? (
+        <div className="h-10 w-32 bg-[#F0F0EF] rounded-[6px] animate-pulse" />
+      ) : error ? (
+        <>
+          <p
+            className="text-[#111111] text-4xl font-bold"
+            style={{ letterSpacing: "-0.02em", lineHeight: 1.1 }}
+          >
+            —
+          </p>
+          <p className="text-[#787774] text-sm mt-2">Unavailable right now</p>
+        </>
+      ) : (
+        <p
+          className="text-[#111111] text-4xl font-bold"
+          style={{ letterSpacing: "-0.02em", lineHeight: 1.1 }}
+        >
+          {formatCurrency(amount ?? 0, "USD")}
+        </p>
+      )}
+      {onManage && (
+        <div className="flex justify-end mt-6">
+          <button
+            type="button"
+            onClick={onManage}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-[6px] bg-[#111111] hover:bg-[#333333] text-white text-sm font-medium transition-colors active:scale-[0.98]"
+          >
+            Manage
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+              <path d="M5 2l4.5 4.5L5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
