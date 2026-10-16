@@ -66,6 +66,21 @@ export interface UserBalance {
   balance: number;
 }
 
+// Shape expected from GET /api/captain/team/fund-balance (planned, not built on the backend yet)
+export interface TeamFundBalance {
+  teamId: number;
+  fundBalance: number;
+}
+
+// Shape expected from GET /api/captain/team/players (planned, not built on the backend yet)
+export interface TeamPlayer {
+  userId: number;
+  email: string;
+  fullName: string | null;
+  avatarUrl: string | null;
+  balance: number;
+}
+
 export type TopUpStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 // Shape returned by POST/GET /api/user/top-ups
@@ -74,6 +89,26 @@ export interface TopUpRequest {
   amount: number;
   status: TopUpStatus;
   createdAt: string;
+}
+
+// Shape returned by GET /api/captain/top-ups and POST /api/captain/top-ups/{id}/approve|reject
+export interface CaptainTopUpRequest {
+  id: number;
+  userId: number;
+  userEmail: string;
+  amount: number;
+  status: TopUpStatus;
+  createdAt: string;
+  reviewedAt: string | null;
+}
+
+// Paginated list shape returned by the backend (zero-based page)
+export interface PageResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
 }
 
 export interface GameHistoryEntry {
